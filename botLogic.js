@@ -56,14 +56,22 @@ export async function sendResponse(phone, text, stateBefore, stateAfter) {
         payload.phone = phone;
         payload.message = text;
       } else {
-        // Padrão Evolution API
+        // Padrão Evolution API (compatibilidade total v1 e v2 enviando ambos os formatos)
         payload.number = phone;
         payload.text = text;
+        payload.textMessage = { text: text };
       }
 
-      await axios.post(process.env.WA_API_URL, payload, { headers });
+      console.log(`[WhatsApp Outgoing] Enviando POST para: ${process.env.WA_API_URL}`);
+      console.log(`[WhatsApp Outgoing] Payload:`, JSON.stringify(payload));
+
+      const res = await axios.post(process.env.WA_API_URL, payload, { headers });
+      console.log(`[WhatsApp Outgoing] Resposta da API status: ${res.status}`);
     } catch (err) {
       console.error(`Erro ao enviar WhatsApp para ${phone}:`, err.message);
+      if (err.response) {
+        console.error(`[WhatsApp Outgoing Error] Status: ${err.response.status} | Resposta:`, JSON.stringify(err.response.data));
+      }
     }
   } else {
     console.log(`[Simulador WhatsApp] Enviado para ${phone}:\n${text}\n`);
