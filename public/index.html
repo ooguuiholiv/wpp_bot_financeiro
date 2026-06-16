@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Painel Administrativo - Chatbot Whatsapp</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="glass-bg"></div>
+  
+  <header>
+    <div class="header-container">
+      <div class="logo">
+        <span class="pulse-dot"></span>
+        <h1>FinBot <span>WhatsApp</span></h1>
+      </div>
+      <div class="system-time">
+        <p>Sistema Ativo</p>
+      </div>
+    </div>
+  </header>
+
+  <main class="dashboard-grid">
+    <!-- COLUNA DA ESQUERDA: Métricas, Usuários e Logs -->
+    <div class="left-panel">
+      
+      <!-- Métricas -->
+      <section class="stats-section grid-3">
+        <div class="stat-card">
+          <div class="stat-icon auth">✔</div>
+          <div class="stat-info">
+            <h3 id="stat-auth-count">0</h3>
+            <p>Contatos Autorizados</p>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon blocked">✖</div>
+          <div class="stat-info">
+            <h3 id="stat-unauth-count">0</h3>
+            <p>Contatos Bloqueados</p>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon msg">💬</div>
+          <div class="stat-info">
+            <h3 id="stat-msg-count">0</h3>
+            <p>Interações Registradas</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Abas de Navegação -->
+      <div class="tabs-nav">
+        <button id="tab-dashboard" class="tab-btn active" onclick="switchTab('dashboard')">Painel Geral</button>
+        <button id="tab-history" class="tab-btn" onclick="switchTab('history')">Consultas dos Usuários</button>
+      </div>
+
+      <!-- CONTEÚDO DA ABA: Painel Geral -->
+      <div id="view-dashboard" class="tab-content active">
+        <!-- Gerenciamento de Usuários -->
+        <section class="card user-manager-card">
+          <div class="card-header">
+            <h2>Gerenciar Contatos</h2>
+            <button id="btn-show-add-modal" class="btn btn-primary">+ Adicionar Novo</button>
+          </div>
+          
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>Nome / Contato</th>
+                  <th>Telefone</th>
+                  <th>Status Bot</th>
+                  <th>Ações</th>
+                </tr>
+              </thead>
+              <tbody id="users-table-body">
+                <!-- Preenchido dinamicamente -->
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- Logs de Interações -->
+        <section class="card logs-card">
+          <div class="card-header">
+            <h2>Logs de Transição de Estados</h2>
+            <button id="btn-refresh-logs" class="btn btn-secondary">🔄 Atualizar</button>
+          </div>
+          <div class="table-wrapper logs-table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>Data/Hora</th>
+                  <th>Telefone</th>
+                  <th>Tipo</th>
+                  <th>Mensagem</th>
+                  <th>Estado Anterior</th>
+                  <th>Estado Novo</th>
+                </tr>
+              </thead>
+              <tbody id="logs-table-body">
+                <!-- Preenchido dinamicamente -->
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+
+      <!-- CONTEÚDO DA ABA: Consultas dos Usuários -->
+      <div id="view-history" class="tab-content">
+        <section class="card user-queries-card">
+          <div class="card-header">
+            <h2>Consultas e Solicitações por Usuário</h2>
+            <div class="header-filters">
+              <select id="select-history-user" class="select-filter">
+                <option value="">-- Selecionar Usuário --</option>
+              </select>
+              <button id="btn-refresh-history" class="btn btn-secondary">🔄 Atualizar</button>
+            </div>
+          </div>
+          <div class="queries-container">
+            <div class="queries-timeline" id="queries-timeline-body">
+              <div class="timeline-empty">
+                Selecione um usuário para visualizar o histórico de solicitações e respostas.
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <!-- COLUNA DA DIREITA: Simulador Interativo -->
+    <div class="right-panel">
+      <section class="phone-mockup">
+        <div class="phone-header">
+          <div class="camera-notch"></div>
+          <div class="phone-status">
+            <div class="phone-user-select-container">
+              <label for="select-simulator-user">Conversar como:</label>
+              <select id="select-simulator-user">
+                <!-- Preenchido dinamicamente -->
+              </select>
+            </div>
+            <div class="user-status-indicator" id="simulator-user-status">
+              <span class="status-dot"></span>
+              <span id="simulator-user-status-text">Carregando...</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="phone-screen">
+          <div class="chat-header">
+            <div class="chat-avatar">F</div>
+            <div class="chat-user-info">
+              <h3>FinBot Financeiro</h3>
+              <p>Online</p>
+            </div>
+          </div>
+
+          <div class="chat-body" id="chat-messages-container">
+            <!-- Balões de conversa dinâmicos -->
+            <div class="system-message">
+              Selecione um contato no menu acima para começar a simulação e testar o fluxo.
+            </div>
+          </div>
+
+          <div class="chat-footer">
+            <input type="text" id="chat-input-message" placeholder="Digite uma mensagem..." autocomplete="off">
+            <button id="btn-chat-send">➤</button>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <!-- MODAL: Adicionar Usuário -->
+  <div class="modal-overlay" id="add-user-modal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="modal-title">Adicionar Novo Contato</h3>
+        <button class="modal-close" id="btn-close-modal">✖</button>
+      </div>
+      <form id="add-user-form">
+        <div class="form-group">
+          <label for="input-phone">Número de Telefone (com DDD)</label>
+          <input type="text" id="input-phone" placeholder="Ex: 5534999999999" required>
+          <small>Digite apenas números (Ex: 55 + DDD + Número)</small>
+        </div>
+        <div class="form-group">
+          <label for="input-name">Nome do Contato</label>
+          <input type="text" id="input-name" placeholder="Ex: Franco Administrador" required>
+        </div>
+        <div class="form-group checkbox-group">
+          <input type="checkbox" id="input-authorized" checked>
+          <label for="input-authorized">Autorizar bot a responder este número</label>
+        </div>
+        <div class="form-actions">
+          <button type="button" class="btn btn-secondary" id="btn-cancel-modal">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Salvar Contato</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
